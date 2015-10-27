@@ -1,0 +1,30 @@
+---
+connections:
+    - host:
+      user:
+      driver:
+      password_file:
+      databases:
+          - name:
+            exclude_tables:
+
+encryption:
+    type: gpg
+    config:
+        recipient: ''
+        sign: true
+        key_file:
+
+s3:
+    region:
+    bucket:
+    prefix:
+    key:
+    secret: ''
+
+rotation:
+    daily_backups: 14
+    weekly_backup_day: 1
+    weekly_backups: 10
+    monthly_backup_day: 1
+    monthly_backups: 12
