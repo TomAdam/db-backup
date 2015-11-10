@@ -41,6 +41,7 @@ abstract class AbstractDatabaseDumper
         foreach ($databases as $id => $database) {
             $dumpFilename[$id] = $this->getDumpFilename($database['name']);
             echo 'Dumping '.$database['name'].' to '.$dumpFilename[$id].'...';
+            $database['exclude_tables'] = $database['exclude_tables'] ?: [];
             $this->dumpDatabase($database['name'], $database['exclude_tables'], $dumpFilename[$id]);
             echo " done\n";
         }
