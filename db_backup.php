@@ -53,7 +53,7 @@ FileWiper::wipe($dumpedFiles);
 FileWiper::wipe($encryptedFiles);
 
 // rotate
-$rotator = new BackupRotator($config['rotation']);
-$rotator->rotate($store);
+//$rotator = new BackupRotator($config['rotation']);
+//$rotator->rotate($store);
 
 echo "Completed\n";
