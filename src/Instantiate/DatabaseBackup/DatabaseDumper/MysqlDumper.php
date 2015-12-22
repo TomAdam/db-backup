@@ -65,7 +65,7 @@ class MysqlDumper extends AbstractDatabaseDumper
     {
         // structure
         Command::exec(
-            'mysqldump --defaults-extra-file={settings_file} -v -h {host} -u {user} --single-transaction --no-data {db} > {temp_sql_file}',
+            'mysqldump --defaults-extra-file={settings_file} -v -h {host} -u {user} --quick --single-transaction --no-data {db} > {temp_sql_file}',
             [
                 '{settings_file}' => $this->settingsFile,
                 '{host}' => $this->host,
@@ -75,9 +75,9 @@ class MysqlDumper extends AbstractDatabaseDumper
             ]
         );
 
-        // tables
+        // data
         Command::exec(
-            'mysqldump --defaults-extra-file={settings_file} -v -h {host} -u {user} {exclude_tables} {db} >> {temp_sql_file}',
+            'mysqldump --defaults-extra-file={settings_file} -v -h {host} -u {user} --quick --single-transaction --no-create-info {exclude_tables} {db} >> {temp_sql_file}',
             [
                 '{settings_file}' => $this->settingsFile,
                 '{host}' => $this->host,
