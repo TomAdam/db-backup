@@ -49,6 +49,7 @@ class GpgFileEncrypter extends AbstractFileEncrypter
                 '{input_file}' => $inputFile,
                 '{output_file}' => $outputFile,
             ],
+            [],
             $this->logger
         );
     }
