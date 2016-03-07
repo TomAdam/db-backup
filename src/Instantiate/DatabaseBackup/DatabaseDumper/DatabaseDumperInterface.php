@@ -18,7 +18,7 @@
  * information
  *
  * @author     Instantiate
- * @copyright  Copyright (c) 2015 Instantiate
+ * @copyright  Copyright (c) 2016 Instantiate
  *
  * @link       http://www.instantiate.co.uk/
  *
@@ -26,11 +26,9 @@
  *             LICENSE file that was distributed with this source code.
  */
 
-namespace Instantiate\DatabaseBackup\StorageAdapter;
+namespace Instantiate\DatabaseBackup\DatabaseDumper;
 
-interface StorageAdapterInterface
+interface DatabaseDumperInterface
 {
-    public function store(array $fileList);
-    public function getListing();
-    public function delete(array $fileList);
+    public function dump(array $databases);
 }

@@ -18,7 +18,7 @@
  * information
  *
  * @author     Instantiate
- * @copyright  Copyright (c) 2015 Instantiate
+ * @copyright  Copyright (c) 2016 Instantiate
  *
  * @link       http://www.instantiate.co.uk/
  *
@@ -26,26 +26,31 @@
  *             LICENSE file that was distributed with this source code.
  */
 
-namespace Instantiate\DatabaseBackup\FileEncrypter;
+namespace Instantiate\DatabaseBackup\DatabaseDumper;
 
-class CleartextFileEncrypter extends AbstractFileEncrypter
+use Psr\Log\LoggerInterface;
+
+class DatabaseDumperFactory
 {
     /**
-     * @param string $inputFile
-     * @param string $outputFile
-     */
-    protected function encryptFile($inputFile, $outputFile)
-    {
-    }
-
-    /**
-     * @param string $inputFile
+     * @param array           $connection
+     * @param LoggerInterface $logger
      *
-     * @return string
+     * @return DatabaseDumperInterface
+     *
+     * @throws \Exception
      */
-    protected function getEncryptedFilename($inputFile)
+    public static function getDumper(array $connection, LoggerInterface $logger)
     {
-        // TODO: don't register files for deletion as same filename as input
-        return $inputFile;
+        switch ($connection['driver']) {
+            case 'mysql':
+                return new MysqlDumper($connection, $logger);
+                break;
+            case 'postgres':
+                return new PostgresDumper($connection, $logger);
+                break;
+            default:
+                throw new \Exception('Driver type "'.$connection['driver'].'" invalid');
+        }
     }
 }

@@ -18,32 +18,17 @@
  * information
  *
  * @author     Instantiate
- * @copyright  Copyright (c) 2015 Instantiate
+ * @copyright  Copyright (c) 2016 Instantiate
  *
  * @link       http://www.instantiate.co.uk/
  *
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
-namespace Instantiate\DatabaseBackup\Util;
 
-use Symfony\Component\Process\Process;
+namespace Instantiate\DatabaseBackup\FileEncrypter;
 
-class Command
+interface FileEncrypterInterface
 {
-    /**
-     * @param string $command
-     * @param array $arguments
-     * @param array $env
-     * @return Process
-     */
-    public static function exec($command, array $arguments, array $env = []) {
-        $process = new Process(strtr($command, $arguments));
-        $process
-            ->setEnv($env)
-            ->setTimeout(null)
-            ->mustRun();
-
-        return $process;
-    }
+    public function encrypt(array $fileList);
 }

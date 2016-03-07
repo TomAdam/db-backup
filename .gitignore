@@ -2,3 +2,7 @@
 /bin
 /vendor
 /config.yml
+/log
+/.php_cs.cache
+
+!.gitkeep

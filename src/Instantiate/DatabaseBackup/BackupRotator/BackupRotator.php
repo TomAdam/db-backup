@@ -25,6 +25,7 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\BackupRotator;
 
 use Instantiate\DatabaseBackup\StorageAdapter\StorageAdapterInterface;
@@ -61,6 +62,7 @@ class BackupRotator
 
     /**
      * @param array $fileList
+     *
      * @return array
      */
     private function getDeleteList(array $fileList)
@@ -75,7 +77,7 @@ class BackupRotator
 
         $collatedFileList = [];
         foreach ($splitFileList as $splitFile) {
-            if (count($splitFile) != 4){
+            if (count($splitFile) != 4) {
                 continue;
             }
 

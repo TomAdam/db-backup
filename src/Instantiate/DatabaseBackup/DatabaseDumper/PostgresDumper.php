@@ -25,57 +25,34 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\DatabaseDumper;
 
-use Instantiate\DatabaseBackup\Util\Command;
+use Instantiate\DatabaseBackup\Util\Process;
 
 class PostgresDumper extends AbstractDatabaseDumper
 {
     /**
-     * @var string
-     */
-    private $host;
-    /**
-     * @var string
-     */
-    private $user;
-    /**
-     * @var string
-     */
-    private $pgpassFile;
-
-    /**
-     * @param string $host
-     * @param string $user
-     * @param string $pgpassFile
-     */
-    public function __construct($host, $user, $pgpassFile)
-    {
-        $this->host = $host;
-        $this->user = $user;
-        $this->pgpassFile = $pgpassFile;
-    }
-
-    /**
      * @param string $database
-     * @param array $excludeTables
+     * @param array  $excludeTables
      * @param string $target
      */
     protected function dumpDatabase($database, array $excludeTables, $target)
     {
         // structure + tables
-        Command::exec(
+        Process::exec(
             'pg_dump -v -w -h {host} -U {user} -d {db} {exclude_tables} > {temp_sql_file}',
             [
-                '{host}' => $this->host,
-                '{user}' => $this->user,
+                '{host}' => $this->connection['host'],
+                '{user}' => $this->connection['user'],
                 '{db}' => $database,
                 '{exclude_tables}' => $this->buildExcludeTablesArgument($excludeTables),
                 '{temp_sql_file}' => $target,
             ],
             [
-                'PGPASSFILE' => $this->pgpassFile
-            ]
+                'PGPASSFILE' => $this->connection['password_file'],
+            ],
+            $this->logger
         );
     }
 
@@ -89,6 +66,7 @@ class PostgresDumper extends AbstractDatabaseDumper
 
     /**
      * @param array $excludeTables
+     *
      * @return string
      */
     private function buildExcludeTablesArgument(array $excludeTables)
@@ -96,6 +74,7 @@ class PostgresDumper extends AbstractDatabaseDumper
         $argument = array_map(function ($table) {
             return '--exclude-table-data='.$table;
         }, $excludeTables);
+
         return implode(' ', $argument);
     }
 }

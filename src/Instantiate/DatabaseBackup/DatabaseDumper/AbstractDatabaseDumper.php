@@ -25,39 +25,72 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\DatabaseDumper;
 
-abstract class AbstractDatabaseDumper
+use Psr\Log\LoggerInterface;
+
+abstract class AbstractDatabaseDumper implements DatabaseDumperInterface
 {
     /**
+     * @var array
+     */
+    protected $connection;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param array           $connection
+     * @param LoggerInterface $logger
+     */
+    public function __construct(array $connection, LoggerInterface $logger)
+    {
+        $this->connection = $connection;
+        $this->logger = $logger;
+    }
+
+    /**
      * @param array $databases
-     * @return array
      *
-     * TODO: error handling - should continue after a database fails
+     * @return array
      */
     public function dump(array $databases)
     {
-        $dumpFilename = [];
-        foreach ($databases as $id => $database) {
-            $dumpFilename[$id] = $this->getDumpFilename($database['name']);
-            echo 'Dumping '.$database['name'].' to '.$dumpFilename[$id].'...';
-            $database['exclude_tables'] = isset($database['exclude_tables']) ? $database['exclude_tables'] : [];
-            $this->dumpDatabase($database['name'], $database['exclude_tables'], $dumpFilename[$id]);
-            echo " done\n";
+        $dumpedFiles = [];
+        foreach ($databases as $database) {
+            try {
+                $dumpFilename = $this->getDumpFilename($database['name']);
+                $this->logger->notice('Dumping '.$database['name'].' to '.$dumpFilename);
+
+                // todo: this should be fixed during configuration stage
+                $database['exclude_tables'] = isset($database['exclude_tables']) ? $database['exclude_tables'] : [];
+
+                // todo: add filename to wipe list
+                $this->dumpDatabase($database['name'], $database['exclude_tables'], $dumpFilename);
+                $dumpedFiles[] = $dumpFilename;
+            } catch (\Exception $e) {
+                $this->logger->error('Exception while dumping '.$database['name'].': '.$e->getMessage());
+            }
         }
-        return $dumpFilename;
+
+        return $dumpedFiles;
     }
 
     /**
      * @param string $databaseName
+     *
      * @return string
+     *
      * @throws \Exception
      */
     protected function getDumpFilename($databaseName)
     {
         $filename = date('YmdHis').'_'.$this->getDriverName().'_'.$databaseName.'.sql';
         if (is_file($filename)) {
-            throw new \Exception('Database dump file '. $filename.' already exists');
+            throw new \Exception('Database dump file '.$filename.' already exists');
         }
 
         return $filename;

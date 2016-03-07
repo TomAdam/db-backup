@@ -25,6 +25,7 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\Util;
 
 use Symfony\Component\Yaml\Yaml;
@@ -33,7 +34,9 @@ class ConfigLoader
 {
     /**
      * @param string $path
+     *
      * @return array
+     *
      * @throws \Exception
      */
     public static function loadConfig($path)
@@ -42,6 +45,6 @@ class ConfigLoader
             throw new \Exception('Could not load config file '.$path);
         }
 
-        return Yaml::parse($path);
+        return Yaml::parse(file_get_contents($path));
     }
 }

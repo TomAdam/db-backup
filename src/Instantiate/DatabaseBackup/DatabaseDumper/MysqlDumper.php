@@ -25,67 +25,47 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\DatabaseDumper;
 
-use Instantiate\DatabaseBackup\Util\Command;
+use Instantiate\DatabaseBackup\Util\Process;
 
 class MysqlDumper extends AbstractDatabaseDumper
 {
     /**
-     * @var string
-     */
-    private $host;
-    /**
-     * @var string
-     */
-    private $user;
-    /**
-     * @var string
-     */
-    private $settingsFile;
-
-    /**
-     * @param string $host
-     * @param string $user
-     * @param string $settingsFile
-     */
-    public function __construct($host, $user, $settingsFile)
-    {
-        $this->host = $host;
-        $this->user = $user;
-        $this->settingsFile = $settingsFile;
-    }
-
-    /**
      * @param string $database
-     * @param array $excludeTables
+     * @param array  $excludeTables
      * @param string $target
      */
     protected function dumpDatabase($database, array $excludeTables, $target)
     {
         // structure
-        Command::exec(
-            'mysqldump --defaults-extra-file={settings_file} -v -h {host} -u {user} --quick --single-transaction --no-data {db} > {temp_sql_file}',
+        Process::exec(
+            'mysqldump --defaults-extra-file={password_file} -v -h {host} -u {user} --quick --single-transaction --no-data {db} > {temp_sql_file}',
             [
-                '{settings_file}' => $this->settingsFile,
-                '{host}' => $this->host,
-                '{user}' => $this->user,
+                '{password_file}' => $this->connection['password_file'],
+                '{host}' => $this->connection['host'],
+                '{user}' => $this->connection['user'],
                 '{db}' => $database,
                 '{temp_sql_file}' => $target,
-            ]
+            ],
+            [],
+            $this->logger
         );
 
         // data
-        Command::exec(
-            'mysqldump --defaults-extra-file={settings_file} -v -h {host} -u {user} --quick --single-transaction --no-create-info {exclude_tables} {db} >> {temp_sql_file}',
+        Process::exec(
+            'mysqldump --defaults-extra-file={password_file} -v -h {host} -u {user} --quick --single-transaction --no-create-info {exclude_tables} {db} >> {temp_sql_file}',
             [
-                '{settings_file}' => $this->settingsFile,
-                '{host}' => $this->host,
-                '{user}' => $this->user,
+                '{password_file}' => $this->connection['password_file'],
+                '{host}' => $this->connection['host'],
+                '{user}' => $this->connection['user'],
                 '{exclude_tables}' => $this->buildExcludeTablesArgument($database, $excludeTables),
                 '{db}' => $database,
                 '{temp_sql_file}' => $target,
-            ]
+            ],
+            [],
+            $this->logger
         );
     }
 
@@ -99,7 +79,8 @@ class MysqlDumper extends AbstractDatabaseDumper
 
     /**
      * @param string $database
-     * @param array $excludeTables
+     * @param array  $excludeTables
+     *
      * @return string
      */
     private function buildExcludeTablesArgument($database, array $excludeTables)
@@ -107,6 +88,7 @@ class MysqlDumper extends AbstractDatabaseDumper
         $argument = array_map(function ($table) use ($database) {
             return '--ignore-table='.$database.'.'.$table;
         }, $excludeTables);
+
         return implode(' ', $argument);
     }
 }

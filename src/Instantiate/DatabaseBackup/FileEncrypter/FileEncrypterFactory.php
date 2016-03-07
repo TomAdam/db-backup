@@ -18,7 +18,7 @@
  * information
  *
  * @author     Instantiate
- * @copyright  Copyright (c) 2015 Instantiate
+ * @copyright  Copyright (c) 2016 Instantiate
  *
  * @link       http://www.instantiate.co.uk/
  *
@@ -28,24 +28,29 @@
 
 namespace Instantiate\DatabaseBackup\FileEncrypter;
 
-class CleartextFileEncrypter extends AbstractFileEncrypter
+use Psr\Log\LoggerInterface;
+
+class FileEncrypterFactory
 {
     /**
-     * @param string $inputFile
-     * @param string $outputFile
-     */
-    protected function encryptFile($inputFile, $outputFile)
-    {
-    }
-
-    /**
-     * @param string $inputFile
+     * @param array           $config
+     * @param LoggerInterface $logger
      *
-     * @return string
+     * @return FileEncrypterInterface
+     *
+     * @throws \Exception
      */
-    protected function getEncryptedFilename($inputFile)
+    public static function getEncrypter(array $config, LoggerInterface $logger)
     {
-        // TODO: don't register files for deletion as same filename as input
-        return $inputFile;
+        switch ($config['type']) {
+            case 'gpg':
+                return new GpgFileEncrypter($config['config'], $logger);
+                break;
+            case 'cleartext':
+                return new CleartextFileEncrypter($config['config'], $logger);
+                break;
+            default:
+                throw new \Exception('Encryption type "'.$config['type'].'" invalid');
+        }
     }
 }

@@ -25,12 +25,14 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\StorageAdapter;
 
 use Aws\S3\S3Client;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
+use Psr\Log\LoggerInterface;
 
 class S3StorageAdapter implements StorageAdapterInterface
 {
@@ -40,9 +42,15 @@ class S3StorageAdapter implements StorageAdapterInterface
     private $filesystem;
 
     /**
-     * @param array $config
+     * @var LoggerInterface
      */
-    public function __construct(array $config)
+    private $logger;
+
+    /**
+     * @param array           $config
+     * @param LoggerInterface $logger
+     */
+    public function __construct(array $config, LoggerInterface $logger)
     {
         $this->filesystem = $this->getFilesystem(
             $config['region'],
@@ -51,6 +59,8 @@ class S3StorageAdapter implements StorageAdapterInterface
             $config['bucket'],
             $config['prefix']
         );
+
+        $this->logger = $logger;
     }
 
     /**
@@ -59,18 +69,21 @@ class S3StorageAdapter implements StorageAdapterInterface
     public function store(array $fileList)
     {
         foreach ($fileList as $file) {
-            echo 'Storing '.$file.' in s3 bucket '.$this->filesystem->getAdapter()->getBucket().'...';
-            $stream = fopen($file, 'r');
-            $this->filesystem->writeStream(
-                $this->getStoredFilename($file),
-                $stream,
-                ['visibility' => AdapterInterface::VISIBILITY_PRIVATE]
-            );
+            $this->logger->notice('Storing '.$file.' in s3 bucket '.$this->filesystem->getAdapter()->getBucket());
+            try {
+                $stream = fopen($file, 'r');
+                $this->filesystem->writeStream(
+                    $this->getStoredFilename($file),
+                    $stream,
+                    ['visibility' => AdapterInterface::VISIBILITY_PRIVATE]
+                );
+            } catch (\Exception $e) {
+                $this->logger->error('Exception while storing '.$file.': '.$e->getMessage());
+            }
 
-            if (is_resource($stream)) {
+            if (isset($stream) && is_resource($stream)) {
                 fclose($stream);
             }
-            echo " done\n";
         }
     }
 
@@ -88,9 +101,13 @@ class S3StorageAdapter implements StorageAdapterInterface
     public function delete(array $fileList)
     {
         foreach ($fileList as $file) {
-            echo 'Deleting '.$file.' in s3 bucket '.$this->filesystem->getAdapter()->getBucket().'...';
-            $this->filesystem->delete($file);
-            echo " done\n";
+            $this->logger->notice('Deleting '.$file.' in s3 bucket '.$this->filesystem->getAdapter()->getBucket());
+
+            try {
+                $this->filesystem->delete($file);
+            } catch (\Exception $e) {
+                $this->logger->error('Exception while deleting '.$file.': '.$e->getMessage());
+            }
         }
     }
 
@@ -125,6 +142,7 @@ class S3StorageAdapter implements StorageAdapterInterface
         ]);
 
         $adapter = new AwsS3Adapter($client, $bucket, $prefix);
+
         return new Filesystem($adapter);
     }
 }

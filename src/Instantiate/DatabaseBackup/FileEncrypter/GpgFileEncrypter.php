@@ -25,43 +25,31 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\FileEncrypter;
 
-use Instantiate\DatabaseBackup\Util\Command;
+use Instantiate\DatabaseBackup\Util\Process;
 
 class GpgFileEncrypter extends AbstractFileEncrypter
 {
-    private $sign;
-    private $recipient;
-    private $keyFile;
-
-    /**
-     * @param array $config
-     */
-    public function __construct(array $config)
-    {
-        $this->sign = $config['sign'];
-        $this->recipient = $config['recipient'];
-        $this->keyFile = $config['key_file'];
-    }
-
     /**
      * @param string $inputFile
      * @param string $outputFile
-     *
-     * TODO: error handling
      */
     protected function encryptFile($inputFile, $outputFile)
     {
-        Command::exec(
+        Process::exec(
             'gpg2 -v --encrypt {sign} --recipient {recipient} --batch --yes {passphrase} --output {output_file} {input_file}',
             [
-                '{sign}' => $this->sign ? '--sign' : '',
-                '{recipient}' => $this->recipient,
-                '{passphrase}' => $this->sign && $this->keyFile ? '--passphrase-file '.$this->keyFile : '',
+                '{sign}' => $this->config['sign'] ? '--sign' : '',
+                '{recipient}' => $this->config['recipient'],
+                '{passphrase}' => $this->config['sign'] && $this->config['key_file']
+                    ? '--passphrase-file '.$this->config['key_file']
+                    : '',
                 '{input_file}' => $inputFile,
                 '{output_file}' => $outputFile,
-            ]
+            ],
+            $this->logger
         );
     }
 

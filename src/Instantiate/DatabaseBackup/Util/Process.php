@@ -29,20 +29,38 @@
 namespace Instantiate\DatabaseBackup\Util;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process as BaseProcess;
 
-class FileWiper
+class Process
 {
     /**
-     * @param array           $fileList
+     * @param string          $command
+     * @param array           $arguments
+     * @param array           $env
      * @param LoggerInterface $logger
+     *
+     * @return Process
      */
-    public static function wipe(array $fileList, LoggerInterface $logger)
+    public static function exec($command, array $arguments, array $env = [], LoggerInterface $logger = null)
     {
-        foreach ($fileList as $file) {
-            $logger->notice('Deleting temporary file '.$file);
-
-            // emits E_WARNING on failure that is picked up by monolog error handler
-            unlink($file);
+        $process = new BaseProcess(strtr($command, $arguments));
+        if ($logger) {
+            $logger->debug('Executing '.$process->getCommandLine());
         }
+
+        try {
+            $process
+                ->setEnv($env)
+                ->setTimeout(null)
+                ->mustRun();
+        } catch (ProcessFailedException $exception) {
+            if ($logger) {
+                $logger->error($exception->getMessage());
+            }
+            throw $exception;
+        }
+
+        return $process;
     }
 }

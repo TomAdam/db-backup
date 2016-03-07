@@ -25,23 +25,52 @@
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
  */
+
 namespace Instantiate\DatabaseBackup\FileEncrypter;
 
-abstract class AbstractFileEncrypter
+use Psr\Log\LoggerInterface;
+
+abstract class AbstractFileEncrypter implements FileEncrypterInterface
 {
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param array           $config
+     * @param LoggerInterface $logger
+     */
+    public function __construct(array $config, LoggerInterface $logger)
+    {
+        $this->config = $config;
+        $this->logger = $logger;
+    }
+
+    /**
      * @param array $fileList
+     *
      * @return array
      */
     public function encrypt(array $fileList)
     {
         $outputFiles = [];
         foreach ($fileList as $id => $file) {
-            $outputFile = $this->getEncryptedFilename($file);
-            echo 'Encrypting '.$file.' to '.$outputFile.'...';
-            $this->encryptFile($file, $outputFile);
-            echo " done\n";
-            $outputFiles[$id] = $outputFile;
+            try {
+                $outputFile = $this->getEncryptedFilename($file);
+                $this->logger->notice('Encrypting '.$file.' to '.$outputFile);
+
+                // todo: add filename to wipe list
+                $this->encryptFile($file, $outputFile);
+                $outputFiles[$id] = $outputFile;
+            } catch (\Exception $e) {
+                $this->logger->error('Exception while encrypting '.$file.': '.$e->getMessage());
+            }
         }
 
         return $outputFiles;

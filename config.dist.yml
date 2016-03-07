@@ -28,3 +28,13 @@ rotation:
     weekly_backups: 10
     monthly_backup_day: 1
     monthly_backups: 12
+
+mailer:
+    host: 127.0.0.1
+    port: 25
+    from: db-backup@test.dev
+    to: tomadam@instantiate.co.uk
+    subject: DB Backup Test Error
+
+log:
+    file: log/db-backup.log
