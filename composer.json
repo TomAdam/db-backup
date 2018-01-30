@@ -1,6 +1,6 @@
 {
-    "name": "db-backup",
-    "description": "DB Backup",
+    "name": "instantiate/db-backup",
+    "description": "Database Backup",
     "license": "MIT",
     "type": "project",
     "require": {
@@ -20,10 +20,7 @@
         "friendsofphp/php-cs-fixer": "~2.10.0"
     },
     "autoload": {
-        "psr-4": {"": "src/"}
-    },
-    "config": {
-        "bin-dir": "bin"
+        "psr-4": {"Instantiate\\DatabaseBackup\\": "src/"}
     },
     "minimum-stability": "stable"
 }
