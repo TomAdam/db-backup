@@ -46,9 +46,9 @@ class DbBackupCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('db_backup')
+            ->setName('db-backup')
             ->setDescription('Backup databases')
-            ->addOption('config_file', 'c', InputOption::VALUE_REQUIRED, 'Config to load', null);
+            ->addOption('config-file', 'c', InputOption::VALUE_REQUIRED, 'Config to load', null);
     }
 
     /**
@@ -64,7 +64,7 @@ class DbBackupCommand extends Command
         $dumpedFiles = [];
         $encryptedFiles = [];
 
-        $config = ConfigLoader::loadConfig($input->getOption('config_file') ?: 'config.yml');
+        $config = ConfigLoader::loadConfig($input->getOption('config-file') ?: 'config.yml');
         $logger = LoggerFactory::getLogger($config, $output);
         ErrorHandler::register($logger);
 

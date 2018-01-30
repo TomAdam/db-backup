@@ -42,7 +42,7 @@ class Application extends BaseApplication
      */
     protected function getCommandName(InputInterface $input)
     {
-        return 'db_backup';
+        return 'db-backup';
     }
 
     /**
