@@ -11,8 +11,8 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-use Symfony\Component\Console\Application;
 use Instantiate\DatabaseBackup\ConsoleCommand\DbBackupCommand;
+use Symfony\Component\Console\Application;
 
 $application = new Application('db-backup');
 
