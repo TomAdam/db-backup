@@ -71,13 +71,13 @@ class LoggerFactory
      */
     private static function getEmailHandler(array $config)
     {
-        $mailerTransport = Swift_SmtpTransport::newInstance(
+        $mailerTransport = new Swift_SmtpTransport(
             $config['mailer']['host'],
             $config['mailer']['port']
         );
 
-        $mailer = Swift_Mailer::newInstance($mailerTransport);
-        $baseMessage = Swift_Message::newInstance($config['mailer']['subject'], null, null, 'utf-8');
+        $mailer = new Swift_Mailer($mailerTransport);
+        $baseMessage = new Swift_Message($config['mailer']['subject'], null, null, 'utf-8');
         $baseMessage
             ->setFrom($config['mailer']['from'])
             ->setTo($config['mailer']['recipient']);
