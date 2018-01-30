@@ -9,9 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-require 'vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-use Instantiate\DatabaseBackup\Console\Application;
+use Symfony\Component\Console\Application;
+use Instantiate\DatabaseBackup\ConsoleCommand\DbBackupCommand;
 
-$application = new Application();
+$application = new Application('db-backup');
+
+$command = new DbBackupCommand();
+$application->add($command);
+$application->setDefaultCommand($command->getName(), true);
+
 $application->run();

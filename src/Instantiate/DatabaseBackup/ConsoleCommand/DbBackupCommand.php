@@ -8,7 +8,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Instantiate\DatabaseBackup\Console\Command;
+namespace Instantiate\DatabaseBackup\ConsoleCommand;
 
 use Instantiate\DatabaseBackup\DatabaseDumper\DatabaseDumperFactory;
 use Instantiate\DatabaseBackup\FileEncrypter\FileEncrypterFactory;
@@ -25,10 +25,11 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class DbBackupCommand extends Command
 {
+    protected static $defaultName = 'db-backup';
+
     protected function configure()
     {
         $this
-            ->setName('db-backup')
             ->setDescription('Backup databases')
             ->addOption('config-file', 'c', InputOption::VALUE_REQUIRED, 'Config to load', null);
     }
