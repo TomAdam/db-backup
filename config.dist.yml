@@ -15,12 +15,14 @@ encryption:
         sign: true
         key_file:
 
-s3:
-    region:
-    bucket:
-    prefix:
-    key:
-    secret: ''
+storage:
+    type: s3
+    config:
+        region:
+        bucket:
+        prefix:
+        key:
+        secret: ''
 
 rotation:
     daily_backups: 14

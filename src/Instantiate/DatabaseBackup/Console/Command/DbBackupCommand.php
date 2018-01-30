@@ -13,7 +13,7 @@ namespace Instantiate\DatabaseBackup\Console\Command;
 use Instantiate\DatabaseBackup\DatabaseDumper\DatabaseDumperFactory;
 use Instantiate\DatabaseBackup\FileEncrypter\FileEncrypterFactory;
 use Instantiate\DatabaseBackup\Logger\LoggerFactory;
-use Instantiate\DatabaseBackup\StorageAdapter\S3StorageAdapter;
+use Instantiate\DatabaseBackup\StorageAdapter\StorageAdapterFactory;
 use Instantiate\DatabaseBackup\Util\ConfigLoader;
 use Instantiate\DatabaseBackup\Util\FileWiper;
 use Monolog\ErrorHandler;
@@ -62,8 +62,7 @@ class DbBackupCommand extends Command
             $encryptedFiles = $encrypter->encrypt($dumpedFiles);
 
             // store
-            // todo: add factory?
-            $store = new S3StorageAdapter($config['s3'], $logger);
+            $store = StorageAdapterFactory::getStorageAdapter($config['storage'], $logger);
             $store->store($encryptedFiles);
 
             // rotate
