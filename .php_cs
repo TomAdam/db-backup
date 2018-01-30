@@ -1,13 +1,22 @@
 <?php
 
-$finder = Symfony\CS\Finder\Symfony23Finder::create()
-    ->in(__DIR__.'/src');
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
 
-return Symfony\CS\Config\Config::create()
+$finder = Finder::create()
+    ->name('db-backup')
+    ->name('.php_cs')
+    ->exclude('bin')
+    ->in(__DIR__);
+
+return Config::create()
+    ->setFinder($finder)
     ->setUsingCache(true)
-    ->fixers([
-        '-phpdoc_short_description',
-        'ordered_use',
-        'short_array_syntax',
-    ])
-    ->finder($finder);
+    ->setRules([
+        '@Symfony' => true,
+        'ordered_imports' => true,
+        'array_syntax' => [
+            'syntax' => 'short',
+        ],
+        'phpdoc_summary' => false,
+    ]);

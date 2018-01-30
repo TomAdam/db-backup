@@ -20,7 +20,7 @@
  * @author     Instantiate
  * @copyright  Copyright (c) 2015 Instantiate
  *
- * @link       http://www.instantiate.co.uk/
+ * @see       http://www.instantiate.co.uk/
  *
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
@@ -31,6 +31,8 @@ namespace Instantiate\DatabaseBackup\StorageAdapter;
 interface StorageAdapterInterface
 {
     public function store(array $fileList);
+
     public function getListing();
+
     public function delete(array $fileList);
 }

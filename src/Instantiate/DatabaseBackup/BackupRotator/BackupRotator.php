@@ -20,7 +20,7 @@
  * @author     Instantiate
  * @copyright  Copyright (c) 2015 Instantiate
  *
- * @link       http://www.instantiate.co.uk/
+ * @see       http://www.instantiate.co.uk/
  *
  * @license    For the full copyright and license information, please view the
  *             LICENSE file that was distributed with this source code.
@@ -77,7 +77,7 @@ class BackupRotator
 
         $collatedFileList = [];
         foreach ($splitFileList as $splitFile) {
-            if (count($splitFile) != 4) {
+            if (4 != count($splitFile)) {
                 continue;
             }
 
