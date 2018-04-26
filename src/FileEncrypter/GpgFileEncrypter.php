@@ -21,7 +21,7 @@ class GpgFileEncrypter extends AbstractFileEncrypter
     protected function encryptFile($inputFile, $outputFile)
     {
         Process::exec(
-            'gpg2 -v --encrypt {sign} --recipient {recipient} --batch --yes {passphrase} --output {output_file} {input_file}',
+            'gpg2 -v --encrypt {sign} --recipient {recipient} --batch --pinentry-mode loopback --yes {passphrase} --output {output_file} {input_file}',
             [
                 '{sign}' => $this->config['sign'] ? '--sign' : '',
                 '{recipient}' => $this->config['recipient'],
