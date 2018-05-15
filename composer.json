@@ -4,7 +4,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.0",
         "symfony/console": "~3.4.3",
         "symfony/process": "~3.4.3",
         "symfony/yaml": "~3.4.3",

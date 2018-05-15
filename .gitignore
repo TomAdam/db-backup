@@ -3,5 +3,6 @@
 /config.yml
 /log
 /.php_cs.cache
+/composer.lock
 
 !.gitkeep
