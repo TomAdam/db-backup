@@ -28,6 +28,9 @@ class StorageAdapterFactory
             case 's3':
                 return new S3StorageAdapter($config['config'], $logger);
                 break;
+            case 'local':
+                return new LocalStorageAdapter($config['config'], $logger);
+                break;
             default:
                 throw new \Exception('Storage adapter type "'.$config['type'].'" invalid');
         }
