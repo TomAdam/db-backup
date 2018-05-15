@@ -32,7 +32,7 @@ class PostgresDumper extends AbstractDatabaseDumper
                 '{temp_sql_file}' => $target,
             ],
             [
-                'PGPASSFILE' => $this->connection['password_file'],
+                'PGPASSWORD' => $this->connection['password'],
             ],
             $this->logger
         );
