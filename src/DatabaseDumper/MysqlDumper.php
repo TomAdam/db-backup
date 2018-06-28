@@ -32,6 +32,7 @@ class MysqlDumper extends AbstractDatabaseDumper
                 '{temp_sql_file}' => $target,
             ],
             [],
+            null,
             $this->logger
         );
 
@@ -47,6 +48,7 @@ class MysqlDumper extends AbstractDatabaseDumper
                 '{temp_sql_file}' => $target,
             ],
             [],
+            null,
             $this->logger
         );
     }

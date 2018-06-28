@@ -34,6 +34,7 @@ class PostgresDumper extends AbstractDatabaseDumper
             [
                 'PGPASSWORD' => $this->connection['password'],
             ],
+            null,
             $this->logger
         );
     }

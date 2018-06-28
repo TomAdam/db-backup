@@ -17,14 +17,15 @@ use Symfony\Component\Process\Process as BaseProcess;
 class Process
 {
     /**
-     * @param string          $command
-     * @param array           $arguments
-     * @param array           $env
+     * @param string $command
+     * @param array $arguments
+     * @param array $env
+     * @param mixed $stdInput
      * @param LoggerInterface $logger
      *
-     * @return Process
+     * @return BaseProcess
      */
-    public static function exec($command, array $arguments, array $env = [], LoggerInterface $logger = null)
+    public static function exec($command, array $arguments, array $env = [], $stdInput = null, LoggerInterface $logger = null)
     {
         $process = new BaseProcess(strtr($command, $arguments));
         if ($logger) {
@@ -34,6 +35,7 @@ class Process
         try {
             $process
                 ->setEnv($env)
+                ->setInput($stdInput)
                 ->setTimeout(null)
                 ->mustRun();
         } catch (ProcessFailedException $exception) {
