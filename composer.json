@@ -17,10 +17,12 @@
         "swiftmailer/swiftmailer": "~6.0.2"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "~2.10.0"
+        "friendsofphp/php-cs-fixer": "~2.10.0",
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
-        "psr-4": {"Instantiate\\DatabaseBackup\\": "src/"}
+        "psr-4": {"Instantiate\\DatabaseBackup\\": "src/"},
+        "exclude-from-classmap": ["src/Tests/"]
     },
     "minimum-stability": "stable"
 }
